@@ -1,0 +1,17 @@
+quarkus:
+  http:
+    root-path: /api
+  datasource:
+    db-kind: oracle
+    username: notify
+    password: notify
+    jdbc:
+      url: jdbc:oracle:thin:@//localhost:1521/ORCL
+  hibernate-orm:
+    database:
+      generation: none
+    log:
+      sql: true
+greeting:
+  message: "hello"
+
