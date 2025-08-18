@@ -2,16 +2,60 @@ quarkus:
   http:
     root-path: /api
   datasource:
-    db-kind: oracle
-    username: notify
-    password: notify
-    jdbc:
-      url: jdbc:oracle:thin:@//localhost:1521/ORCL
+    notify:
+      db-kind: oracle
+      username: notify
+      password: notify
+      jdbc:
+        url: jdbc:oracle:thin:@//localhost:1521/ORCL
+        max-size: 20
+      health:
+        enabled: true
+    cim:
+      db-kind: oracle
+      username: cimback
+      password: cimback
+      jdbc:
+        url: jdbc:oracle:thin:@//localhost:1521/ORCL
+        max-size: 20
+      health:
+        enabled: true
   hibernate-orm:
-    database:
-      generation: none
-    log:
-      sql: true
-greeting:
-  message: "hello"
-
+    notify:
+      datasource: notify
+      database:
+        generation: none
+      log:
+        sql: true
+      packages: com.example.notify.entity
+    cim:
+      datasource: cim
+      database:
+        generation: none
+      log:
+        sql: true
+      packages: com.example.cim.entity
+  smallrye-openapi:
+    info:
+      title: My Quarkus API
+      version: 1.0.0
+      description: API for my Quarkus application
+  swagger-ui:
+    path: /swagger-ui
+    always-include: true
+  smallrye-metrics:
+    path: /q/metrics
+    jaxrs: true
+  health:
+    extensions:
+      enabled: true
+  rest-client:
+    test-service:
+      url: http://localhost:8081/test-service
+    scope: jakarta.inject.Singleton
+    connect-timeout: 10000
+    read-timeout: 15000
+    enable-compression: true
+    logging:
+      scope: request-response
+      body-limit: 200

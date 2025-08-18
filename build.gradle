@@ -28,6 +28,16 @@ dependencies {
     implementation 'io.quarkus:quarkus-hibernate-orm'
     implementation 'io.quarkus:quarkus-hibernate-orm-panache'
     implementation 'io.quarkus:quarkus-jdbc-oracle'
+
+    implementation 'io.quarkus:quarkus-smallrye-openapi'
+    implementation 'io.quarkus:quarkus-swagger-ui'
+
+    implementation 'io.quarkus:quarkus-smallrye-health'
+    implementation 'io.quarkus:quarkus-smallrye-metrics'
+    implementation 'com.oracle.database.jdbc:ojdbc8:23.2.0.0'
+
+    // feign client
+    implementation("io.quarkus:quarkus-rest-client-jackson")
 }
 
 group = 'com.example'
