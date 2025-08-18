@@ -38,6 +38,8 @@ dependencies {
 
     // feign client
     implementation("io.quarkus:quarkus-rest-client-jackson")
+
+    implementation("io.quarkus:quarkus-messaging-rabbitmq")
 }
 
 group = 'com.example'

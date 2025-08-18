@@ -6,6 +6,7 @@ import com.example.cim.mapper.CategoryMapper;
 import com.example.cim.model.CategoryDto;
 import com.example.cim.model.PageResponse;
 import com.example.cim.model.UserDto;
+import com.example.cim.rabbimq.CategoryProducer;
 import com.example.cim.repository.CategoryRepository;
 import com.example.cim.service.CategoryService;
 import com.example.config.enums.PublicError;
@@ -33,6 +34,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Inject
     @RestClient
     private TestServiceFeignClient testServiceFeignClient;
+
+    @Inject
+    private CategoryProducer categoryProducer;
 
     @Override
     @Transactional
@@ -75,15 +79,19 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDto> list() {
-        List<CategoryEntity> currencyEntities = categoryRepository.listAll();
-        UserDto userDto = new UserDto();
-        userDto.setName("duy");
-        Response response = testServiceFeignClient.searchUser(userDto);
-        List<UserDto> users = response.readEntity(
-                new GenericType<>() {
-                }
-        );
-        return categoryMapper.toDtoList(currencyEntities);
+        List<CategoryEntity> categoryEntities = categoryRepository.listAll();
+        // test feign client
+//        UserDto userDto = new UserDto();
+//        userDto.setName("duy");
+//        Response response = testServiceFeignClient.searchUser(userDto);
+//        List<UserDto> users = response.readEntity(
+//                new GenericType<>() {
+//                }
+//        );
+
+        // test rabbitmq
+        categoryProducer.send(categoryMapper.toDto(categoryEntities.get(0)));
+        return categoryMapper.toDtoList(categoryEntities);
     }
 
     @Override

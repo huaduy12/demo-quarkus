@@ -35,6 +35,8 @@ quarkus:
       log:
         sql: true
       packages: com.example.cim.entity
+
+
   smallrye-openapi:
     info:
       title: My Quarkus API
@@ -43,12 +45,16 @@ quarkus:
   swagger-ui:
     path: /swagger-ui
     always-include: true
+
+
   smallrye-metrics:
     path: /q/metrics
     jaxrs: true
   health:
     extensions:
       enabled: true
+
+
   rest-client:
     test-service:
       url: http://localhost:8081/test-service
@@ -59,3 +65,43 @@ quarkus:
     logging:
       scope: request-response
       body-limit: 200
+
+
+  rabbitmq:
+    username: admin
+    password: admin
+    virtual-host: /
+    hostname: localhost
+    port: 5672
+mp:
+  messaging:
+    # ----- OUTGOING -----
+    outgoing:
+      category-out:
+        connector: smallrye-rabbitmq
+        exchange:
+          name: category-exchange
+          type: direct
+          durable: true
+        default-routing-key: category.created
+        delivery-mode: persistent
+        retries: 5
+        reconnect-attempts: 10
+        reconnect-interval: 5
+
+    # ----- INCOMING -----
+    incoming:
+      category-in:
+        connector: smallrye-rabbitmq
+        queue:
+          name: category-queue
+          durable: true
+        exchange:
+          name: category-exchange
+          type: direct
+          durable: true
+        routing-keys: category.created
+        auto-acknowledgement: true
+        max-incoming-inflight: 2
+
+
