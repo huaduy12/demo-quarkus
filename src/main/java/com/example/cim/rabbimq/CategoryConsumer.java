@@ -4,9 +4,11 @@ import com.example.cim.model.CategoryDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 @ApplicationScoped
+@Slf4j
 public class CategoryConsumer {
 
     @Inject
@@ -16,9 +18,9 @@ public class CategoryConsumer {
     public void consume(String msg) {
         try {
             CategoryDto categoryDto = mapper.readValue(msg, CategoryDto.class);
-            System.out.println("Received category: " + categoryDto.toString());
+            log.info("Received category: " + categoryDto.toString());
         } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
+            log.error("Error: " + e.getMessage());
         }
     }
 }

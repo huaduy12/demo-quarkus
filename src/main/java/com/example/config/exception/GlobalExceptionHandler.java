@@ -2,6 +2,7 @@ package com.example.config.exception;
 
 import com.example.config.enums.PublicError;
 import com.example.notify.model.BaseResponse;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -26,7 +27,8 @@ public class GlobalExceptionHandler implements ExceptionMapper<Throwable> {
 
             case SQLException ex -> buildError(Response.Status.INTERNAL_SERVER_ERROR,
                     BaseResponse.errorData(PublicError.DATA_ACCESS_ERROR, "Database error occurred"));
-
+            case NotFoundException ex -> buildError(Response.Status.INTERNAL_SERVER_ERROR,
+                    BaseResponse.errorData(PublicError.DATA_NOT_FOUND, "Resource not found"));
             default -> buildError(Response.Status.INTERNAL_SERVER_ERROR,
                     BaseResponse.errorData(PublicError.UNEXPECTED_ERROR, "Internal server error"));
         };

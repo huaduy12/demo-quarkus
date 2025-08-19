@@ -25,7 +25,7 @@ public class UserFilter implements ContainerRequestFilter, ContainerResponseFilt
             return;
         }
         token = token.substring("Bearer ".length());
-        // TODO: parse token để lấy user, ví dụ trước:
+        // parse token để lấy user, ví dụ trước:
         UserDto user = new UserDto();
         user.setName("test");
         user.setEmail("test@example.com");

@@ -20,6 +20,9 @@ public class CategoryCacheManual {
     private final ReactiveKeyCommands<String> keyCommands;
     private final ObjectMapper objectMapper;
 
+    private static final String PREFIX_KEY_CATEGORIES = "manual:categories:";
+    private static final String PREFIX_KEY_CATEGORY = "manual:category:";
+
     @Inject
     public CategoryCacheManual(RedisDataSource ds, ReactiveRedisDataSource reactive, ObjectMapper objectMapper) {
         this.valueCommands = ds.value(String.class);
@@ -31,7 +34,7 @@ public class CategoryCacheManual {
     public void setCategoriesCache(String key, List<CategoryDto> categories, int ttlSeconds) {
         try {
             String json = objectMapper.writeValueAsString(categories);
-            valueCommands.setex("manual:categories:" + key, ttlSeconds, json);
+            valueCommands.setex(PREFIX_KEY_CATEGORIES + key, ttlSeconds, json);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to serialize categories to JSON", e);
         }
@@ -39,7 +42,7 @@ public class CategoryCacheManual {
 
     // Lấy danh sách CategoryDto
     public List<CategoryDto> getCategoriesCache(String key) {
-        String json = valueCommands.get("manual:categories:" + key);
+        String json = valueCommands.get(PREFIX_KEY_CATEGORIES + key);
         if (json == null) {
             return Collections.emptyList(); // Cache miss
         }
@@ -54,7 +57,7 @@ public class CategoryCacheManual {
     public void setCategoryCache(String key, CategoryDto category, int ttlSeconds) {
         try {
             String json = objectMapper.writeValueAsString(category);
-            valueCommands.setex("manual:category:" + key, ttlSeconds, json);
+            valueCommands.setex(PREFIX_KEY_CATEGORY + key, ttlSeconds, json);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to serialize category to JSON", e);
         }
@@ -62,7 +65,7 @@ public class CategoryCacheManual {
 
     // Lấy một CategoryDto
     public CategoryDto getCategoryCache(String key) {
-        String json = valueCommands.get("manual:category:" + key);
+        String json = valueCommands.get(PREFIX_KEY_CATEGORY + key);
         if (json == null) {
             return null; // Cache miss
         }
@@ -75,7 +78,7 @@ public class CategoryCacheManual {
 
     // Xóa cache
     public void clearCategoryCache(String key) {
-        keyCommands.del("manual:category:" + key, "manual:categories:" + key).await().indefinitely();
+        keyCommands.del(PREFIX_KEY_CATEGORY + key, PREFIX_KEY_CATEGORIES + key).await().indefinitely();
     }
 
     // Xóa tất cả cache với prefix

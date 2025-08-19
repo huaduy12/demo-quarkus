@@ -35,7 +35,7 @@ public class CurrencyController {
                 .build();
     }
 
-    @GET
+    @POST
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Response search(@QueryParam(value = "pageSize") Integer pageSize, @QueryParam("pageNum") Integer pageNum, CurrencyDto currencyDto) {
