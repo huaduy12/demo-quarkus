@@ -5,18 +5,16 @@ import com.example.cim.feignclient.TestServiceFeignClient;
 import com.example.cim.mapper.CategoryMapper;
 import com.example.cim.model.CategoryDto;
 import com.example.cim.model.PageResponse;
-import com.example.cim.model.UserDto;
 import com.example.cim.rabbimq.CategoryProducer;
 import com.example.cim.repository.CategoryRepository;
 import com.example.cim.service.CategoryService;
 import com.example.config.enums.PublicError;
 import com.example.config.exception.BusinessException;
+import io.quarkus.cache.CacheResult;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -69,8 +67,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto detail(String ccyCode) {
-        CategoryEntity categoryEntity = categoryRepository.findByCode(ccyCode);
+    @CacheResult(cacheName = "category-cache")
+    public CategoryDto detail(String code) {
+        CategoryEntity categoryEntity = categoryRepository.findByCode(code);
         if (categoryEntity == null) {
             throw new BusinessException(PublicError.BAD_REQUEST_DATA, Response.Status.NOT_FOUND, "Không tồn tại");
         }
@@ -78,6 +77,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+//    @CacheResult(cacheName = "all-category-cache")
     public List<CategoryDto> list() {
         List<CategoryEntity> categoryEntities = categoryRepository.listAll();
         // test feign client
@@ -90,7 +90,9 @@ public class CategoryServiceImpl implements CategoryService {
 //        );
 
         // test rabbitmq
-        categoryProducer.send(categoryMapper.toDto(categoryEntities.get(0)));
+//        categoryProducer.send(categoryMapper.toDto(categoryEntities.get(0)));
+
+
         return categoryMapper.toDtoList(categoryEntities);
     }
 

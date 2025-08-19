@@ -40,6 +40,10 @@ dependencies {
     implementation("io.quarkus:quarkus-rest-client-jackson")
 
     implementation("io.quarkus:quarkus-messaging-rabbitmq")
+    implementation("io.quarkus:quarkus-messaging-amqp")
+
+    implementation("io.quarkus:quarkus-redis-cache")
+    implementation("io.quarkus:quarkus-redis-client")
 }
 
 group = 'com.example'

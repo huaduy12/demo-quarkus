@@ -6,10 +6,15 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.jboss.logging.Logger;
+
 
 @ApplicationScoped
 public class CategoryProducer {
 
+    private static final Logger LOG = Logger.getLogger(CategoryProducer.class);
+
+    @Inject
     @Channel("category-out")
     Emitter<String> emitter;
 
@@ -19,9 +24,12 @@ public class CategoryProducer {
     public void send(CategoryDto categoryDto) {
         try {
             String json = mapper.writeValueAsString(categoryDto);
+            LOG.infof("Sending category ID=%d to RabbitMQ: %s", categoryDto.getId(), json);
             emitter.send(json);
+            LOG.infof("Successfully sent category ID=%d", categoryDto.getId());
         } catch (Exception e) {
-            throw new RuntimeException("Failed to serialize order", e);
+            LOG.errorf("Failed to send category ID=%d: %s", categoryDto.getId(), e.getMessage());
+            throw new RuntimeException("Failed to serialize or send category", e);
         }
     }
 }

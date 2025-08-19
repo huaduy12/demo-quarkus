@@ -1,6 +1,8 @@
 quarkus:
   http:
     root-path: /api
+  devservices:
+    enabled: false
   datasource:
     notify:
       db-kind: oracle
@@ -66,13 +68,26 @@ quarkus:
       scope: request-response
       body-limit: 200
 
+  redis:
+    hosts: redis://localhost:6379
+    # password: mypassword
+  cache:
+    redis:
+      expire-after-write: 600s
+      category-cache:
+        expire-after-write: 300s
+        prefix: category-cache
+#  log:
+#    level: DEBUG
+#    category:
+#      "io.smallrye.reactive.messaging.rabbitmq":
+#        level: DEBUG
 
-  rabbitmq:
-    username: admin
-    password: admin
-    virtual-host: /
-    hostname: localhost
-    port: 5672
+rabbitmq-host: localhost
+rabbitmq-port: 5672
+rabbitmq-username: admin
+rabbitmq-password: admin
+rabbitmq-virtual-host: /
 mp:
   messaging:
     # ----- OUTGOING -----
