@@ -2,7 +2,9 @@ package com.example.cim.controller;
 
 import com.example.cim.model.BaseResponse;
 import com.example.cim.model.CategoryDto;
+import com.example.cim.model.UserDto;
 import com.example.cim.redis.CategoryCacheManual;
+import com.example.config.filter.UserFilter;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -33,6 +35,8 @@ public class CacheManualController {
 
     @POST
     public Response create(@Valid CategoryDto categoryDto) {
+        UserDto userDto = UserFilter.getCurrentUser();
+        System.out.println("USER: " + userDto);
         categoryCacheManual.setCategoryCache(categoryDto.getCode(), categoryDto, 3600);
         return Response.status(Response.Status.OK)
                 .entity(BaseResponse.success("Thành công"))
