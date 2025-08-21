@@ -1,9 +1,10 @@
 package com.example.cim.controller;
 
-import com.example.cim.feignclient.TestServiceFeignClient;
 import com.example.cim.model.BaseResponse;
 import com.example.cim.model.CategoryDto;
 import com.example.cim.service.CategoryService;
+import com.example.config.security.CheckPermission;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -30,6 +31,7 @@ public class CategoryController {
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(responseCode = "200", description = "Successfully retrieved currency")
+    @CheckPermission(value = "VIEW")
     public Response list() {
         return Response.status(Response.Status.OK)
                 .entity(BaseResponse.success(categoryService.list()))
